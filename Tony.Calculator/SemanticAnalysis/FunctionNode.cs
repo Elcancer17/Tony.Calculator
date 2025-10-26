@@ -30,9 +30,9 @@ namespace Tony.Calculator.SemanticAnalysis
             return Definition.Func(parameters);
         }
 
-        public string Print()
+        public override string ToString()
         {
-            string[] parameters = Parameters.Select(x => x.Print()).ToArray();
+            string[] parameters = Parameters.Select(x => x.ToString()).ToArray();
             return $"{Definition.Name}({string.Join(", ", parameters)})";
         }
     }

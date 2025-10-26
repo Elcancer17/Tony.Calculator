@@ -23,7 +23,7 @@ namespace Tony.Calculator.SemanticAnalysis
             return Definition.Value;
         }
 
-        public string Print()
+        public override string ToString()
         {
             return Definition.Value.ToString();
         }

@@ -28,9 +28,9 @@ namespace Tony.Calculator.SemanticAnalysis
             return Definition.Func(Left.Evaluate(), Right.Evaluate());
         }
 
-        public string Print()
+        public override string ToString()
         {
-            return $"({Left.Print()}{Definition.Symbol}{Right.Print()})";
+            return $"({Left.ToString()}{Definition.Symbol}{Right.ToString()})";
         }
     }
 }

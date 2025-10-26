@@ -28,7 +28,7 @@ namespace Tony.Calculator.SemanticAnalysis
             return Number;
         }
 
-        public string Print()
+        public override string ToString()
         {
             return Number.ToString();
         }

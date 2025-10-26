@@ -6,7 +6,6 @@ namespace Tony.Calculator.SemanticAnalysis
     {
         public Token Token { get; }
         public int CalculateEndIndex();
-        public string Print();
         public object Evaluate();
     }
 }
