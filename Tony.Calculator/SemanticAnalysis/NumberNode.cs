@@ -8,7 +8,7 @@ namespace Tony.Calculator.SemanticAnalysis
         private static Regex TrimRegex;
         static NumberNode()
         {
-            TrimRegex = new Regex(@"\s", RegexOptions.Compiled, TimeSpan.FromSeconds(1));
+            TrimRegex = new Regex(@"_", RegexOptions.Compiled, TimeSpan.FromSeconds(1));
         }
         public Token Token { get; }
         public double Number { get; }

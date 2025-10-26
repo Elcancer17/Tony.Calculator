@@ -5,7 +5,7 @@ namespace Tony.Calculator.LexicalAnalysis
     public static class LexicalAnalyser
     {
         public static TokenRule[] Rules = [
-            new TokenRule(TokenTypes.Number, @"[0-9](?:[0-9\s]*[0-9])?(?:\.[0-9\s]*[0-9])?"),
+            new TokenRule(TokenTypes.Number, @"[0-9](?:[0-9_]*[0-9])?(?:\.[0-9](?:[0-9_]*[0-9])?)?"),
             new TokenRule(TokenTypes.Identifier, @"[A-Za-z][A-Za-z0-9_]*"),
             new TokenRule(TokenTypes.Operator, @"([^A-Za-z0-9\s()\.])\1{0,2}"),
             new TokenRule(TokenTypes.L_Parenthesis, @"\("),
