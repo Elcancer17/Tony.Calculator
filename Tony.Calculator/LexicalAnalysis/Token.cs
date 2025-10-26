@@ -2,8 +2,8 @@
 {
     public struct Token
     {
-        public int Index {  get; init; }
-        public ReadOnlyMemory<char> Text {  get; init; }
+        public int Index { get; set; }
+        public ReadOnlyMemory<char> Text { get; init; }
         public TokenTypes Type { get; init; }
 
         public override string ToString()

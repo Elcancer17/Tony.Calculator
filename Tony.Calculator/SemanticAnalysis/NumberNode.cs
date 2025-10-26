@@ -11,6 +11,7 @@ namespace Tony.Calculator.SemanticAnalysis
             TrimRegex = new Regex(@"_", RegexOptions.Compiled, TimeSpan.FromSeconds(1));
         }
         public Token Token { get; }
+        public int IndexOffset { get; set; }
         public double Number { get; }
         public NumberNode(Token token)
         {
@@ -20,7 +21,7 @@ namespace Tony.Calculator.SemanticAnalysis
 
         public int CalculateEndIndex()
         {
-            return Token.Index;
+            return Token.Index + IndexOffset;
         }
 
         public object Evaluate()

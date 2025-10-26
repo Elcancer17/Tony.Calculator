@@ -11,7 +11,7 @@ namespace Tony.Calculator.Plugins
     {
         public static IReadOnlyDictionary<string, FunctionDefinition> Functions = new Dictionary<string, FunctionDefinition>()
         {
-
+            { "max", new FunctionDefinition(nameof(Math.Max), Max, 2) },
         };
 
         public static IReadOnlyDictionary<string, VariableDefinition> Variables = new Dictionary<string, VariableDefinition>()
@@ -64,6 +64,24 @@ namespace Tony.Calculator.Plugins
             foreach ((string name, BinaryOperatorDefinition definition) in BinaryOperatos)
             {
                 binaryOperators.Add(name, definition);
+            }
+        }
+        #endregion
+
+        #region function
+        private static object Max(object[] args)
+        {
+            if (PluginHelper.TryCastDouble(args, out double[] doubles))
+            {
+                return Math.Max(doubles[0], doubles[1]);
+            }
+            else if (PluginHelper.TryCastLong(args, out long[] longs))
+            {
+                return Math.Max(longs[0], longs[1]);
+            }
+            else
+            {
+                throw new NotSupportedException();
             }
         }
         #endregion

@@ -14,6 +14,10 @@ namespace Tony.Calculator.SemanticAnalysis
     {
         public int Index { get; init; }
         public string Message { get; init; }
+        public override string ToString()
+        {
+            return $"{nameof(Index)}: {Index}, {nameof(Message)}: {Message}";
+        }
     }
     public class SemanticAnalyser
     {
@@ -29,18 +33,19 @@ namespace Tony.Calculator.SemanticAnalysis
             List<Token> filteredTokens = new List<Token>();
             for(int i = 0; i < tokens.Count; i++)
             {
-                TokenTypes type = tokens[i].Type;
-                if(type == TokenTypes.Unknown)
+                Token token = tokens[i];
+                if(token.Type == TokenTypes.Unknown)
                 {
-                    throw new NotSupportedException($"Could not parse unknown token: \"{tokens[i].Text}\".");
+                    throw new NotSupportedException($"Could not parse unknown token: \"{token.Text}\".");
                 }
-                else if(type != TokenTypes.Whitespace)
+                else if(token.Type != TokenTypes.Whitespace)
                 {
-                    filteredTokens.Add(tokens[i]);
+                    token.Index = filteredTokens.Count;
+                    filteredTokens.Add(token);
                 }
             }
             errors = new List<SemanticError>();
-            return Parse(filteredTokens, 0, filteredTokens.Count, errors);
+            return Parse(filteredTokens, 0, filteredTokens.Count - 1, errors, true);
         }
 
         /*
@@ -58,35 +63,35 @@ namespace Tony.Calculator.SemanticAnalysis
             (), : self explanatory
             
             E -> EoE 
-                | oE 
-                | id(P) 
+                | oE ~
+                | id(P) ~
                 | (E) ~
-                | T
-            P -> E,P 
-                | E
+                | T ~
+            P -> E,P ~
+                | E ~
             T -> v ~
-                | id
+                | id ~
         */
-        private IParseNode Parse(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors)
+        private IParseNode Parse(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors, bool parseBinaryOperator)
         {
             Token startToken = tokens[start];
             switch (startToken.Type)
             {
                 case TokenTypes.Number:
-                    return ParseNumber(tokens, start, end, errors);
+                    return ParseNumber(tokens, start, end, errors, parseBinaryOperator);
                 case TokenTypes.Identifier:
                     if (tokens.Count > start + 1 && tokens[start + 1].Type == TokenTypes.L_Parenthesis)
                     {
-                        return ParseFunction(tokens, start, end, errors);
+                        return ParseFunction(tokens, start, end, errors, parseBinaryOperator);
                     }
                     else
                     {
-                        return ParseVariable(tokens, start, end, errors);
+                        return ParseVariable(tokens, start, end, errors, parseBinaryOperator);
                     }
                 case TokenTypes.Operator:
-                    return ParseUnaryOperator(tokens, start, end, errors);
+                    return ParseUnaryOperator(tokens, start, end, errors, parseBinaryOperator);
                 case TokenTypes.L_Parenthesis:
-                    return ParseParentheses(tokens, start, end, errors);
+                    return ParseParentheses(tokens, start, end, errors, parseBinaryOperator);
                 default:
                     errors.Add(new SemanticError()
                     {
@@ -97,19 +102,22 @@ namespace Tony.Calculator.SemanticAnalysis
             }
         }
 
-        private IParseNode ParseNumber(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors)
+        private IParseNode ParseNumber(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors, bool parseBinaryOperator)
         {
             Token numberToken = tokens[start];
             NumberNode numberNode = new NumberNode(numberToken);
-            int potentialBinaryOperatorIndex = start + 1;
-            if (RequireBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors))
+            if (parseBinaryOperator)
             {
-                return ParseBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors, numberNode);
+                int potentialBinaryOperatorIndex = start + 1;
+                if (RequireBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors))
+                {
+                    return ParseBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors, numberNode);
+                }
             }
             return numberNode;
         }
 
-        private IParseNode ParseVariable(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors)
+        private IParseNode ParseVariable(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors, bool parseBinaryOperator)
         {
             Token variableToken = tokens[start];
 
@@ -123,20 +131,82 @@ namespace Tony.Calculator.SemanticAnalysis
             }
 
             VariableNode variableNode = new VariableNode(variableToken, definition);
-            int potentialBinaryOperatorIndex = start + 1;
-            if (RequireBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors))
+            if (parseBinaryOperator)
             {
-                return ParseBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors, variableNode);
+                int potentialBinaryOperatorIndex = start + 1;
+                if (RequireBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors))
+                {
+                    return ParseBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors, variableNode);
+                }
             }
             return variableNode;
         }
 
-        private IParseNode ParseFunction(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors)
+        private IParseNode ParseFunction(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors, bool parseBinaryOperator)
         {
-            return null;
+            Token functionToken = tokens[start];
+
+            int parenthesesCount = 0;
+            int parameterStart = start + 2;
+            List<IParseNode> parameters = new List<IParseNode>();
+            for (int i = parameterStart; i <= end; i++)
+            {
+                Token newToken = tokens[i];
+                if (newToken.Type == TokenTypes.L_Parenthesis)
+                {
+                    parenthesesCount++;
+                }
+                else if (tokens[i].Type == TokenTypes.R_Parenthesis)
+                {
+                    if (parenthesesCount == 0)
+                    {
+                        IParseNode parameter = Parse(tokens, parameterStart, i - 1, errors, true);
+                        parameters.Add(parameter);
+                        break;
+                    }
+                    parenthesesCount--;
+                }
+                else if (newToken.Type == TokenTypes.Colon)
+                {
+                    if (parenthesesCount == 0)
+                    {
+                        IParseNode parameter = Parse(tokens, parameterStart, i - 1, errors, true);
+                        parameters.Add(parameter);
+                        parameterStart = i + 1;
+                    }
+                }
+            }
+            if (parenthesesCount != 0)
+            {
+                errors.Add(new SemanticError()
+                {
+                    Index = end,
+                    Message = "Missing closing parenthesis.",
+                });
+            }
+
+            if (!Definitions.Functions.TryGetValue(functionToken.Text.ToString(), out FunctionDefinition definition))
+            {
+                errors.Add(new SemanticError()
+                {
+                    Index = functionToken.Index,
+                    Message = $"Failed to find definition for unary operator symbol: {definition.Name}.",
+                });
+            }
+
+            FunctionNode functionNode = new FunctionNode(functionToken, definition, parameters);
+            if (parseBinaryOperator)
+            {
+                int potentialBinaryOperatorIndex = (parameters.LastOrDefault()?.CalculateEndIndex() + 2) ?? (start + 3);
+                if (RequireBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors))
+                {
+                    return ParseBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors, functionNode);
+                }
+            }
+            return functionNode;
         }
 
-        private IParseNode ParseUnaryOperator(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors)
+        private IParseNode ParseUnaryOperator(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors, bool parseBinaryOperator)
         {
             Token unaryOperatorToken = tokens[start];
 
@@ -149,14 +219,15 @@ namespace Tony.Calculator.SemanticAnalysis
                 });
             }
 
-
-            IParseNode operand = Parse(tokens, start + 1, end, errors);
+            IParseNode operand = Parse(tokens, start + 1, end, errors, false);
             UnaryOperatorNode unaryOperatorNode = new UnaryOperatorNode(unaryOperatorToken, definition, operand);
-            return unaryOperatorNode;
-            int potentialBinaryOperatorIndex = start + 1;
-            if (RequireBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors))
+            if (parseBinaryOperator)
             {
-                return ParseBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors, unaryOperatorNode);
+                int potentialBinaryOperatorIndex = operand.CalculateEndIndex() + 1;
+                if (RequireBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors))
+                {
+                    return ParseBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors, unaryOperatorNode);
+                }
             }
             return unaryOperatorNode;
         }
@@ -187,7 +258,7 @@ namespace Tony.Calculator.SemanticAnalysis
             IParseNode right;
             if (end - start >= 1)
             {
-                right = Parse(tokens, start + 1, end, errors);
+                right = Parse(tokens, start + 1, end, errors, true);
             }
             else
             {
@@ -209,19 +280,7 @@ namespace Tony.Calculator.SemanticAnalysis
             return new BinaryOperatorNode(binaryOperatorToken, definition, left, right);
         }
 
-        private IParseNode ParseParentheses(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors)
-        {
-            int closingParenthesisIndex = FindClosingParenthesisIndex(tokens, start, end);
-            IParseNode parenthesisNode = Parse(tokens, start + 1, closingParenthesisIndex - 1, errors);
-            int potentialBinaryOperatorIndex = closingParenthesisIndex + 1;
-            if (RequireBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors))
-            {
-                return ParseBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors, parenthesisNode);
-            }
-            return parenthesisNode;
-        }
-
-        private int FindClosingParenthesisIndex(IReadOnlyList<Token> tokens, int start, int end)
+        private IParseNode ParseParentheses(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors, bool parseBinaryOperator)
         {
             int count = 0;
             int closingParenthesisIndex = -1;
@@ -243,9 +302,24 @@ namespace Tony.Calculator.SemanticAnalysis
             }
             if (count != 0)
             {
-                throw new Exception("Missing closing parenthesis.");
+                closingParenthesisIndex = end;
+                errors.Add(new SemanticError()
+                {
+                    Index = end,
+                    Message = "Missing closing parenthesis.",
+                });
             }
-            return closingParenthesisIndex;
+            IParseNode parenthesisNode = Parse(tokens, start + 1, closingParenthesisIndex - 1, errors, true);
+            parenthesisNode.IndexOffset++;
+            if (parseBinaryOperator)
+            {
+                int potentialBinaryOperatorIndex = closingParenthesisIndex + 1;
+                if (RequireBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors))
+                {
+                    return ParseBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors, parenthesisNode);
+                }
+            }
+            return parenthesisNode;
         }
     }
 }

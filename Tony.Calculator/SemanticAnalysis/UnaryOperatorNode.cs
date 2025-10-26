@@ -6,6 +6,7 @@ namespace Tony.Calculator.SemanticAnalysis
     public class UnaryOperatorNode : IParseNode
     {
         public Token Token { get; }
+        public int IndexOffset { get; set; }
         public UnaryOperatorDefinition Definition { get; }
         public IParseNode Operand { get; }
         public UnaryOperatorNode(Token token, UnaryOperatorDefinition definition, IParseNode operand)
@@ -17,7 +18,7 @@ namespace Tony.Calculator.SemanticAnalysis
 
         public int CalculateEndIndex()
         {
-            return Operand.CalculateEndIndex();
+            return Operand.CalculateEndIndex() + IndexOffset;
         }
 
         public object Evaluate()

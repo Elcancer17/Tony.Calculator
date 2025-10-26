@@ -6,6 +6,7 @@ namespace Tony.Calculator.SemanticAnalysis
     public class BinaryOperatorNode : IParseNode
     {
         public Token Token { get; }
+        public int IndexOffset { get; set; }
         public BinaryOperatorDefinition Definition { get; }
         public IParseNode Left { get; }
         public IParseNode Right { get; }
@@ -20,7 +21,7 @@ namespace Tony.Calculator.SemanticAnalysis
 
         public int CalculateEndIndex()
         {
-            return Right.CalculateEndIndex();
+            return Right.CalculateEndIndex() + IndexOffset;
         }
 
         public object Evaluate()

@@ -6,6 +6,7 @@ namespace Tony.Calculator.SemanticAnalysis
     public class FunctionNode : IParseNode
     {
         public Token Token { get; }
+        public int IndexOffset { get; set; }
         public FunctionDefinition Definition { get; }
         public IReadOnlyList<IParseNode> Parameters { get; }
         public FunctionNode(Token token, FunctionDefinition definition, IReadOnlyList<IParseNode> parameters)
@@ -17,17 +18,22 @@ namespace Tony.Calculator.SemanticAnalysis
 
         public int CalculateEndIndex()
         {
+            int endIndex;
             if(Parameters.Count == 0)
             {
-                return Token.Index + 2;
+                endIndex = Token.Index + 2;
             }
-            return Parameters[^1].CalculateEndIndex() + 1;
+            else
+            {
+                endIndex = Parameters[^1].CalculateEndIndex() + 1;
+            }
+            return endIndex + IndexOffset;
         }
 
         public object Evaluate()
         {
             object[] parameters = Parameters.Select(x => x.Evaluate()).ToArray();
-            return Definition.Func(parameters);
+            return Definition.Execute(parameters);
         }
 
         public override string ToString()
