@@ -19,14 +19,82 @@ namespace Tony.Calculator.Test
         }
 
         [TestMethod]
-        public void CanParseAddition()
+        public void CanParseSimpleNumber()
         {
+            const double EXPECTED_VALUE = 12;
+            string equation = "12";
+            IReadOnlyList<Token> tokenStream = LexicalAnalyser.Analyse(equation);
+
+            IParseNode root = _semanticAnalyzer.Parse(tokenStream, out List<SemanticError> errors);
+
+            Assert.AreEqual(EXPECTED_VALUE, root.Evaluate());
+            Assert.IsTrue(errors.Count == 0);
+        }
+
+        [TestMethod]
+        public void CanParseNumberWithDecimals()
+        {
+            const double EXPECTED_VALUE = 123.456;
+            string equation = "123.456";
+            IReadOnlyList<Token> tokenStream = LexicalAnalyser.Analyse(equation);
+
+            IParseNode root = _semanticAnalyzer.Parse(tokenStream, out List<SemanticError> errors);
+
+            Assert.AreEqual(EXPECTED_VALUE, root.Evaluate());
+            Assert.IsTrue(errors.Count == 0);
+        }
+
+        [TestMethod]
+        public void CanParseNumberWithSpacers()
+        {
+            const double EXPECTED_VALUE = 123.456;
+            string equation = "1_2_3.4_5_6";
+            IReadOnlyList<Token> tokenStream = LexicalAnalyser.Analyse(equation);
+
+            IParseNode root = _semanticAnalyzer.Parse(tokenStream, out List<SemanticError> errors);
+
+            Assert.AreEqual(EXPECTED_VALUE, root.Evaluate());
+            Assert.IsTrue(errors.Count == 0);
+        }
+
+
+        [TestMethod]
+        public void CanParseBinaryOperator()
+        {
+            const double EXPECTED_VALUE = 9;
             string equation = "4 + 5";
             IReadOnlyList<Token> tokenStream = LexicalAnalyser.Analyse(equation);
 
             IParseNode root = _semanticAnalyzer.Parse(tokenStream, out List<SemanticError> errors);
 
-            Assert.AreEqual(root.Print(), equation);
+            Assert.AreEqual(EXPECTED_VALUE, root.Evaluate());
+            Assert.IsTrue(errors.Count == 0);
+        }
+
+
+        [TestMethod]
+        public void CanParseUnaryOperator()
+        {
+            const double EXPECTED_VALUE = -5;
+            string equation = "- 5";
+            IReadOnlyList<Token> tokenStream = LexicalAnalyser.Analyse(equation);
+
+            IParseNode root = _semanticAnalyzer.Parse(tokenStream, out List<SemanticError> errors);
+
+            Assert.AreEqual(EXPECTED_VALUE, root.Evaluate());
+            Assert.IsTrue(errors.Count == 0);
+        }
+
+        [TestMethod]
+        public void CanParseParentheses()
+        {
+            const double EXPECTED_VALUE = -10;
+            string equation = "4 - (5 + 9)";
+            IReadOnlyList<Token> tokenStream = LexicalAnalyser.Analyse(equation);
+
+            IParseNode root = _semanticAnalyzer.Parse(tokenStream, out List<SemanticError> errors);
+
+            Assert.AreEqual(EXPECTED_VALUE, root.Evaluate());
             Assert.IsTrue(errors.Count == 0);
         }
     }

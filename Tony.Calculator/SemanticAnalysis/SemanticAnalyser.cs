@@ -185,7 +185,7 @@ namespace Tony.Calculator.SemanticAnalysis
         {
             Token binaryOperatorToken = tokens[start];
             IParseNode right;
-            if (end - start >= 2)
+            if (end - start >= 1)
             {
                 right = Parse(tokens, start + 1, end, errors);
             }
@@ -225,7 +225,7 @@ namespace Tony.Calculator.SemanticAnalysis
         {
             int count = 0;
             int closingParenthesisIndex = -1;
-            for (int i = start; i < end; i++)
+            for (int i = start + 1; i <= end; i++)
             {
                 if (tokens[i].Type == TokenTypes.L_Parenthesis)
                 {
