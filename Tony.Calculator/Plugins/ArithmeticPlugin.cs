@@ -29,11 +29,11 @@ namespace Tony.Calculator.Plugins
         public static IReadOnlyDictionary<string, BinaryOperatorDefinition> BinaryOperatos = new Dictionary<string, BinaryOperatorDefinition>()
         {
             { "+", new BinaryOperatorDefinition("+", 1, Addition) },
-            { "-", new BinaryOperatorDefinition("-", 2, Substraction) },
-            { "*", new BinaryOperatorDefinition("*", 3, Multiplication) },
-            { "/", new BinaryOperatorDefinition("/", 4, Division) },
-            { "%", new BinaryOperatorDefinition("%", 4, Modulo) },
-            { "^", new BinaryOperatorDefinition("^", 5, Exponant) },
+            { "-", new BinaryOperatorDefinition("-", 1, Substraction) },
+            { "*", new BinaryOperatorDefinition("*", 2, Multiplication) },
+            { "/", new BinaryOperatorDefinition("/", 2, Division) },
+            { "%", new BinaryOperatorDefinition("%", 2, Modulo) },
+            { "^", new BinaryOperatorDefinition("^", 3, Exponant) },
         };
 
 

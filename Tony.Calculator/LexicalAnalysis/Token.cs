@@ -2,7 +2,8 @@
 {
     public struct Token
     {
-        public int Index { get; set; }
+        public int TokenIndex { get; set; }
+        public int TextIndex { get; set; }
         public ReadOnlyMemory<char> Text { get; init; }
         public TokenTypes Type { get; init; }
 

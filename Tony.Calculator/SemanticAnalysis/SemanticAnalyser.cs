@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Tony.Calculator.SemanticAnalysis
 {
@@ -37,9 +36,9 @@ namespace Tony.Calculator.SemanticAnalysis
                 {
                     throw new NotSupportedException($"Could not parse unknown token: \"{token.Text}\".");
                 }
-                }
+            }
             errors = new List<SemanticError>();
-            return Parse(tokens, 0, tokens.Count - 1, errors, true);
+            return Parse(tokens, 0, tokens.Count - 1, errors);
         }
 
         /*
@@ -57,61 +56,57 @@ namespace Tony.Calculator.SemanticAnalysis
             (), : self explanatory
             
             E -> EoE 
-                | oE ~
-                | id(P) ~
-                | (E) ~
-                | T ~
-            P -> E,P ~
-                | E ~
-            T -> v ~
-                | id ~
+                | oE 
+                | id(P) 
+                | (E) 
+                | T 
+            P -> E,P 
+                | E 
+            T -> v 
+                | id 
         */
-        private IParseNode Parse(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors, bool parseBinaryOperator)
+        private IParseNode Parse(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors)
         {
+            if(TryParseBinaryOperator(tokens, start, end, errors, out BinaryOperatorNode binaryOperatorNode))
+            {
+                return binaryOperatorNode;
+            }
             Token startToken = tokens[start];
             switch (startToken.Type)
             {
                 case TokenTypes.Number:
-                    return ParseNumber(tokens, start, end, errors, parseBinaryOperator);
+                    return ParseNumber(tokens, start, end, errors);
                 case TokenTypes.Identifier:
                     if (tokens.Count > start + 1 && tokens[start + 1].Type == TokenTypes.L_Parenthesis)
                     {
-                        return ParseFunction(tokens, start, end, errors, parseBinaryOperator);
+                        return ParseFunction(tokens, start, end, errors);
                     }
                     else
                     {
-                        return ParseVariable(tokens, start, end, errors, parseBinaryOperator);
+                        return ParseVariable(tokens, start, end, errors);
                     }
                 case TokenTypes.Operator:
-                    return ParseUnaryOperator(tokens, start, end, errors, parseBinaryOperator);
+                    return ParseUnaryOperator(tokens, start, end, errors);
                 case TokenTypes.L_Parenthesis:
-                    return ParseParentheses(tokens, start, end, errors, parseBinaryOperator);
+                    return ParseParentheses(tokens, start, end, errors);
                 default:
                     errors.Add(new SemanticError()
                     {
-                        Index = startToken.Index,
+                        Index = startToken.TextIndex,
                         Message = $"Unexepected token: {startToken}.",
                     });
                     return null;
             }
         }
 
-        private IParseNode ParseNumber(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors, bool parseBinaryOperator)
+        private IParseNode ParseNumber(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors)
         {
             Token numberToken = tokens[start];
             NumberNode numberNode = new NumberNode(numberToken);
-            if (parseBinaryOperator)
-            {
-                int potentialBinaryOperatorIndex = start + 1;
-                if (RequireBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors))
-                {
-                    return ParseBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors, numberNode);
-                }
-            }
             return numberNode;
         }
 
-        private IParseNode ParseVariable(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors, bool parseBinaryOperator)
+        private IParseNode ParseVariable(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors)
         {
             Token variableToken = tokens[start];
 
@@ -119,24 +114,16 @@ namespace Tony.Calculator.SemanticAnalysis
             {
                 errors.Add(new SemanticError()
                 {
-                    Index = variableToken.Index,
+                    Index = variableToken.TextIndex,
                     Message = $"Failed to find definition for variable: {definition.Name}.",
                 });
             }
 
             VariableNode variableNode = new VariableNode(variableToken, definition);
-            if (parseBinaryOperator)
-            {
-                int potentialBinaryOperatorIndex = start + 1;
-                if (RequireBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors))
-                {
-                    return ParseBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors, variableNode);
-                }
-            }
             return variableNode;
         }
 
-        private IParseNode ParseFunction(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors, bool parseBinaryOperator)
+        private IParseNode ParseFunction(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors)
         {
             Token functionToken = tokens[start];
 
@@ -154,7 +141,7 @@ namespace Tony.Calculator.SemanticAnalysis
                 {
                     if (parenthesesCount == 0)
                     {
-                        IParseNode parameter = Parse(tokens, parameterStart, i - 1, errors, true);
+                        IParseNode parameter = Parse(tokens, parameterStart, i - 1, errors);
                         parameters.Add(parameter);
                         break;
                     }
@@ -164,7 +151,7 @@ namespace Tony.Calculator.SemanticAnalysis
                 {
                     if (parenthesesCount == 0)
                     {
-                        IParseNode parameter = Parse(tokens, parameterStart, i - 1, errors, true);
+                        IParseNode parameter = Parse(tokens, parameterStart, i - 1, errors);
                         parameters.Add(parameter);
                         parameterStart = i + 1;
                     }
@@ -183,24 +170,16 @@ namespace Tony.Calculator.SemanticAnalysis
             {
                 errors.Add(new SemanticError()
                 {
-                    Index = functionToken.Index,
+                    Index = functionToken.TextIndex,
                     Message = $"Failed to find definition for unary operator symbol: {definition.Name}.",
                 });
             }
 
             FunctionNode functionNode = new FunctionNode(functionToken, definition, parameters);
-            if (parseBinaryOperator)
-            {
-                int potentialBinaryOperatorIndex = (parameters.LastOrDefault()?.CalculateEndIndex() + 2) ?? (start + 3);
-                if (RequireBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors))
-                {
-                    return ParseBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors, functionNode);
-                }
-            }
             return functionNode;
         }
 
-        private IParseNode ParseUnaryOperator(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors, bool parseBinaryOperator)
+        private IParseNode ParseUnaryOperator(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors)
         {
             Token unaryOperatorToken = tokens[start];
 
@@ -208,21 +187,13 @@ namespace Tony.Calculator.SemanticAnalysis
             {
                 errors.Add(new SemanticError()
                 {
-                    Index = unaryOperatorToken.Index,
+                    Index = unaryOperatorToken.TextIndex,
                     Message = $"Failed to find definition for unary operator symbol: {definition.Symbol}.",
                 });
             }
 
-            IParseNode operand = Parse(tokens, start + 1, end, errors, false);
+            IParseNode operand = Parse(tokens, start + 1, end, errors);
             UnaryOperatorNode unaryOperatorNode = new UnaryOperatorNode(unaryOperatorToken, definition, operand);
-            if (parseBinaryOperator)
-            {
-                int potentialBinaryOperatorIndex = operand.CalculateEndIndex() + 1;
-                if (RequireBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors))
-                {
-                    return ParseBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors, unaryOperatorNode);
-                }
-            }
             return unaryOperatorNode;
         }
 
@@ -237,7 +208,7 @@ namespace Tony.Calculator.SemanticAnalysis
             {
                 errors.Add(new SemanticError()
                 {
-                    Index = potentialBinaryOperatorToken.Index,
+                    Index = potentialBinaryOperatorToken.TextIndex,
                     Message = $"Unexpected token after expression: {potentialBinaryOperatorToken}.",
                 });
                 return false;
@@ -252,13 +223,13 @@ namespace Tony.Calculator.SemanticAnalysis
             IParseNode right;
             if (end - start >= 1)
             {
-                right = Parse(tokens, start + 1, end, errors, true);
+                right = Parse(tokens, start + 1, end, errors);
             }
             else
             {
                 errors.Add(new SemanticError()
                 {
-                    Index = binaryOperatorToken.Index,
+                    Index = binaryOperatorToken.TextIndex,
                     Message = "Missing right side of binary operator.",
                 });
                 right = null;
@@ -267,14 +238,94 @@ namespace Tony.Calculator.SemanticAnalysis
             {
                 errors.Add(new SemanticError()
                 {
-                    Index = binaryOperatorToken.Index,
+                    Index = binaryOperatorToken.TextIndex,
                     Message = $"Failed to find definition for binary operator symbol: {definition.Symbol}.",
                 });
             }
             return new BinaryOperatorNode(binaryOperatorToken, definition, left, right);
         }
 
-        private IParseNode ParseParentheses(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors, bool parseBinaryOperator)
+        private bool TryParseBinaryOperator(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors, out BinaryOperatorNode binaryOperatorNode)
+        {
+            binaryOperatorNode = null;
+
+            int count = 0;
+            Token highestPriorityToken = default;
+            BinaryOperatorDefinition highestPriorityDefinition = null;
+            for (int i = start; i <= end; i++)
+            {
+                Token token = tokens[i];
+                switch (token.Type)
+                {
+                    case TokenTypes.L_Parenthesis:
+                        count++;
+                        break;
+                    case TokenTypes.R_Parenthesis:
+                        count--;
+                        break;
+                    case TokenTypes.Operator:
+                        if (count == 0 && i != 0 && tokens[i - 1] is Token previousToken
+                            && previousToken.Type != TokenTypes.L_Parenthesis
+                            && previousToken.Type != TokenTypes.Colon
+                            && previousToken.Type != TokenTypes.Operator)
+                        {
+                            if (!Definitions.BinaryOperators.TryGetValue(token.Text.ToString(), out BinaryOperatorDefinition definition))
+                            {
+                                errors.Add(new SemanticError()
+                                {
+                                    Index = token.TextIndex,
+                                    Message = $"Failed to find definition for binary operator symbol: {definition.Symbol}.",
+                                });
+                            }
+                            else if (highestPriorityDefinition == null || highestPriorityDefinition.Priority <= definition.Priority)
+                            {
+                                highestPriorityToken = token;
+                                highestPriorityDefinition = definition;
+                            }
+                        }
+                        break;
+                }
+            }
+
+            if(highestPriorityDefinition == null)
+            {
+                return false;
+            }
+
+            IParseNode left;
+            if (highestPriorityToken.TokenIndex - start >= 1)
+            {
+                left = Parse(tokens, start, highestPriorityToken.TokenIndex - 1, errors);
+            }
+            else
+            {
+                errors.Add(new SemanticError()
+                {
+                    Index = highestPriorityToken.TextIndex,
+                    Message = "Missing left side of binary operator.",
+                });
+                left = null;
+            }
+            IParseNode right;
+            if (end - highestPriorityToken.TokenIndex >= 1)
+            {
+                right = Parse(tokens, highestPriorityToken.TokenIndex + 1, end, errors);
+            }
+            else
+            {
+                errors.Add(new SemanticError()
+                {
+                    Index = highestPriorityToken.TextIndex,
+                    Message = "Missing right side of binary operator.",
+                });
+                right = null;
+            }
+
+            binaryOperatorNode = new BinaryOperatorNode(highestPriorityToken, highestPriorityDefinition, left, right);
+            return true;
+        }
+
+        private IParseNode ParseParentheses(IReadOnlyList<Token> tokens, int start, int end, List<SemanticError> errors)
         {
             int count = 0;
             int closingParenthesisIndex = -1;
@@ -303,16 +354,7 @@ namespace Tony.Calculator.SemanticAnalysis
                     Message = "Missing closing parenthesis.",
                 });
             }
-            IParseNode parenthesisNode = Parse(tokens, start + 1, closingParenthesisIndex - 1, errors, true);
-            parenthesisNode.IndexOffset++;
-            if (parseBinaryOperator)
-            {
-                int potentialBinaryOperatorIndex = closingParenthesisIndex + 1;
-                if (RequireBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors))
-                {
-                    return ParseBinaryOperator(tokens, potentialBinaryOperatorIndex, end, errors, parenthesisNode);
-                }
-            }
+            IParseNode parenthesisNode = Parse(tokens, start + 1, closingParenthesisIndex - 1, errors);
             return parenthesisNode;
         }
     }

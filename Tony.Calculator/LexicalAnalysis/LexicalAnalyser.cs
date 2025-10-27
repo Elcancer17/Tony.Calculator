@@ -31,7 +31,8 @@ namespace Tony.Calculator.LexicalAnalysis
                     {
                         Token newToken = new Token()
                         {
-                            Index = tokens.Count,
+                            TextIndex = index,
+                            TokenIndex = tokens.Count,
                             Text = memory.Slice(index, result.Length),
                             Type = rule.Type
                         };

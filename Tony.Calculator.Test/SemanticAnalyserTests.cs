@@ -140,5 +140,20 @@ namespace Tony.Calculator.Test
             Assert.AreEqual(EXPECTED_VALUE, result);
             Assert.IsTrue(errors.Count == 0);
         }
+
+        [TestMethod]
+        public void BinaryOperatorUsesPriority()
+        {
+            const double EXPECTED_VALUE = 2;
+            string equation = "1-2+3";
+            IReadOnlyList<Token> tokenStream = LexicalAnalyser.Analyse(equation);
+
+            IParseNode root = _semanticAnalyzer.Parse(tokenStream, out List<SemanticError> errors);
+
+            double result = (double)root.Evaluate();
+            Trace.WriteLine($"{root.ToString()}={result}");
+            Assert.AreEqual(EXPECTED_VALUE, result);
+            Assert.IsTrue(errors.Count == 0);
+        }
     }
 }

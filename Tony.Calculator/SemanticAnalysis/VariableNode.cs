@@ -6,17 +6,11 @@ namespace Tony.Calculator.SemanticAnalysis
     public class VariableNode : IParseNode
     {
         public Token Token { get; }
-        public int IndexOffset { get; set; }
         public VariableDefinition Definition { get; }
         public VariableNode(Token token, VariableDefinition definition)
         {
             Token = token;
             Definition = definition;
-        }
-
-        public int CalculateEndIndex()
-        {
-            return Token.Index + IndexOffset;
         }
 
         public object Evaluate()
