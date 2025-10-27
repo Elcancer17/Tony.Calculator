@@ -9,10 +9,10 @@ namespace Tony.Calculator.Definitions
 {
     public class DefinitionCollection
     {
-        public Dictionary<string, FunctionDefinition> Functions { get; init; } = new();
-        public Dictionary<string, VariableDefinition> Variables { get; init; } = new();
-        public Dictionary<string, UnaryOperatorDefinition> UnaryOperators { get; init; } = new();
-        public Dictionary<string, BinaryOperatorDefinition> BinaryOperators { get; init; } = new();
+        public Dictionary<string, FunctionDefinition> Functions { get; } = new(StringComparer.InvariantCultureIgnoreCase);
+        public Dictionary<string, VariableDefinition> Variables { get; } = new(StringComparer.InvariantCultureIgnoreCase);
+        public Dictionary<string, UnaryOperatorDefinition> UnaryOperators { get; } = new(StringComparer.InvariantCultureIgnoreCase);
+        public Dictionary<string, BinaryOperatorDefinition> BinaryOperators { get; } = new(StringComparer.InvariantCultureIgnoreCase);
 
         public void AddPlugin(IPlugin plugin)
         {
