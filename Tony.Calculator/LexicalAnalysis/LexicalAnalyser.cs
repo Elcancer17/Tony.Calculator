@@ -26,16 +26,21 @@ namespace Tony.Calculator.LexicalAnalysis
             {
                 for (int i = 0; i < Rules.Length; i++)
                 {
-                    Match result = Rules[i].Regex.Match(text, index);
+                    TokenRule rule = Rules[i];
+                    Match result = rule.Regex.Match(text, index);
                     if(result.Success && result.Index == index)
                     {
-                        tokens.Add(new Token()
+                        Token newToken = new Token()
                         {
                             Index = index,
-                            Text = memory.Slice(index, result.Length), 
-                            Type = Rules[i].Type
-                        });
+                            Text = memory.Slice(index, result.Length),
+                            Type = rule.Type
+                        };
                         index += result.Length;
+                        if (rule.Type != TokenTypes.Whitespace)
+                        {
+                            tokens.Add(newToken);
+                        }
                         break;
                     }
                 }

@@ -30,7 +30,6 @@ namespace Tony.Calculator.SemanticAnalysis
 
         public IParseNode Parse(IReadOnlyList<Token> tokens, out List<SemanticError> errors)
         {
-            List<Token> filteredTokens = new List<Token>();
             for(int i = 0; i < tokens.Count; i++)
             {
                 Token token = tokens[i];
@@ -38,14 +37,9 @@ namespace Tony.Calculator.SemanticAnalysis
                 {
                     throw new NotSupportedException($"Could not parse unknown token: \"{token.Text}\".");
                 }
-                else if(token.Type != TokenTypes.Whitespace)
-                {
-                    token.Index = filteredTokens.Count;
-                    filteredTokens.Add(token);
                 }
-            }
             errors = new List<SemanticError>();
-            return Parse(filteredTokens, 0, filteredTokens.Count - 1, errors, true);
+            return Parse(tokens, 0, tokens.Count - 1, errors, true);
         }
 
         /*
