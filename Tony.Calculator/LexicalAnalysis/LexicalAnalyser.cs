@@ -21,7 +21,6 @@ namespace Tony.Calculator.LexicalAnalysis
             List<Token> tokens = new List<Token>();
 
             int index = 0;
-
             while(index < memory.Length)
             {
                 for (int i = 0; i < Rules.Length; i++)
@@ -32,7 +31,7 @@ namespace Tony.Calculator.LexicalAnalysis
                     {
                         Token newToken = new Token()
                         {
-                            Index = index,
+                            Index = tokens.Count,
                             Text = memory.Slice(index, result.Length),
                             Type = rule.Type
                         };
