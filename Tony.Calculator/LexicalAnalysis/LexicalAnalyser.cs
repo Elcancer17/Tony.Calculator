@@ -2,7 +2,7 @@
 
 namespace Tony.Calculator.LexicalAnalysis
 {
-    public static class LexicalAnalyser
+    public class LexicalAnalyser
     {
         public static TokenRule[] Rules = [
             new TokenRule(TokenTypes.Number, @"[0-9](?:[0-9_]*[0-9])?(?:\.[0-9](?:[0-9_]*[0-9])?)?"),
@@ -15,9 +15,9 @@ namespace Tony.Calculator.LexicalAnalysis
             new TokenRule(TokenTypes.Unknown, @"."),
         ];
 
-        public static IReadOnlyList<Token> Analyse(string text)
+        public IReadOnlyList<Token> Analyse(string equation)
         {
-            ReadOnlyMemory<char> memory = text.AsMemory();
+            ReadOnlyMemory<char> memory = equation.AsMemory();
             List<Token> tokens = new List<Token>();
 
             int index = 0;
@@ -26,7 +26,7 @@ namespace Tony.Calculator.LexicalAnalysis
                 for (int i = 0; i < Rules.Length; i++)
                 {
                     TokenRule rule = Rules[i];
-                    Match result = rule.Regex.Match(text, index);
+                    Match result = rule.Regex.Match(equation, index);
                     if(result.Success && result.Index == index)
                     {
                         Token newToken = new Token()

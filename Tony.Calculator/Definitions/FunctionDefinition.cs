@@ -26,5 +26,20 @@ namespace Tony.Calculator.Definitions
             }
             return _func(args);
         }
+
+
+        public override string ToString()
+        {
+            string parameterString = string.Empty;
+            for(int i = 0; i < ParameterCount; i++)
+            {
+                parameterString += nameof(Object);
+                if(i < ParameterCount - 1)
+                {
+                    parameterString += ", ";
+                }
+            }
+            return $"{Name}({parameterString})";
+        }
     }
 }

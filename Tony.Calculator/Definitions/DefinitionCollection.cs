@@ -9,6 +9,13 @@ namespace Tony.Calculator.Definitions
 {
     public class DefinitionCollection
     {
+        public static DefinitionCollection Arithmetic { get; }
+        static DefinitionCollection()
+        {
+            Arithmetic = new DefinitionCollection();
+            Arithmetic.AddPlugin(new ArithmeticPlugin());
+        }
+
         public Dictionary<string, FunctionDefinition> Functions { get; } = new(StringComparer.InvariantCultureIgnoreCase);
         public Dictionary<string, VariableDefinition> Variables { get; } = new(StringComparer.InvariantCultureIgnoreCase);
         public Dictionary<string, UnaryOperatorDefinition> UnaryOperators { get; } = new(StringComparer.InvariantCultureIgnoreCase);

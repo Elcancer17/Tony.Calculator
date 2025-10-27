@@ -12,6 +12,7 @@ namespace Tony.Calculator.Plugins
         public static IReadOnlyDictionary<string, FunctionDefinition> Functions = new Dictionary<string, FunctionDefinition>()
         {
             { "max", new FunctionDefinition(nameof(Math.Max), Max, 2) },
+            { "min", new FunctionDefinition(nameof(Math.Min), Min, 2) },
         };
 
         public static IReadOnlyDictionary<string, VariableDefinition> Variables = new Dictionary<string, VariableDefinition>()
@@ -23,17 +24,17 @@ namespace Tony.Calculator.Plugins
 
         public static IReadOnlyDictionary<string, UnaryOperatorDefinition> UnaryOperators = new Dictionary<string, UnaryOperatorDefinition>()
         {
-            { "-", new UnaryOperatorDefinition("-", Negative) },
+            { "-", new UnaryOperatorDefinition("-", nameof(Negative), Negative) },
         };
 
         public static IReadOnlyDictionary<string, BinaryOperatorDefinition> BinaryOperatos = new Dictionary<string, BinaryOperatorDefinition>()
         {
-            { "+", new BinaryOperatorDefinition("+", 1, Addition) },
-            { "-", new BinaryOperatorDefinition("-", 1, Substraction) },
-            { "*", new BinaryOperatorDefinition("*", 2, Multiplication) },
-            { "/", new BinaryOperatorDefinition("/", 2, Division) },
-            { "%", new BinaryOperatorDefinition("%", 2, Modulo) },
-            { "^", new BinaryOperatorDefinition("^", 3, Exponant) },
+            { "+", new BinaryOperatorDefinition("+", nameof(Addition),          1, Addition) },
+            { "-", new BinaryOperatorDefinition("-", nameof(Substraction),      1, Substraction) },
+            { "*", new BinaryOperatorDefinition("*", nameof(Multiplication),    2, Multiplication) },
+            { "/", new BinaryOperatorDefinition("/", nameof(Division),          2, Division) },
+            { "%", new BinaryOperatorDefinition("%", nameof(Modulo),            2, Modulo) },
+            { "^", new BinaryOperatorDefinition("^", nameof(Exponant),          3, Exponant) },
         };
 
 
@@ -78,6 +79,21 @@ namespace Tony.Calculator.Plugins
             else if (PluginHelper.TryCastLong(args, out long[] longs))
             {
                 return Math.Max(longs[0], longs[1]);
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+        }
+        private static object Min(object[] args)
+        {
+            if (PluginHelper.TryCastDouble(args, out double[] doubles))
+            {
+                return Math.Min(doubles[0], doubles[1]);
+            }
+            else if (PluginHelper.TryCastLong(args, out long[] longs))
+            {
+                return Math.Min(longs[0], longs[1]);
             }
             else
             {
