@@ -9,25 +9,25 @@ namespace Tony.Calculator.Plugins
 {
     public class ArithmeticPlugin : IPlugin
     {
-        public static IReadOnlyDictionary<string, FunctionDefinition> Functions = new Dictionary<string, FunctionDefinition>()
+        public IReadOnlyDictionary<string, FunctionDefinition> Functions { get; } = new Dictionary<string, FunctionDefinition>()
         {
             { "max", new FunctionDefinition(nameof(Math.Max), Max, 2) },
             { "min", new FunctionDefinition(nameof(Math.Min), Min, 2) },
         };
 
-        public static IReadOnlyDictionary<string, VariableDefinition> Variables = new Dictionary<string, VariableDefinition>()
+        public IReadOnlyDictionary<string, VariableDefinition> Variables { get; } = new Dictionary<string, VariableDefinition>()
         {
             { "tau", new VariableDefinition(nameof(Math.Tau), Math.Tau) },
             { "pi", new VariableDefinition(nameof(Math.PI), Math.PI) },
             { "e", new VariableDefinition(nameof(Math.E), Math.E) },
         };
 
-        public static IReadOnlyDictionary<string, UnaryOperatorDefinition> UnaryOperators = new Dictionary<string, UnaryOperatorDefinition>()
+        public IReadOnlyDictionary<string, UnaryOperatorDefinition> UnaryOperators { get; } = new Dictionary<string, UnaryOperatorDefinition>()
         {
             { "-", new UnaryOperatorDefinition("-", nameof(Negative), Negative) },
         };
 
-        public static IReadOnlyDictionary<string, BinaryOperatorDefinition> BinaryOperatos = new Dictionary<string, BinaryOperatorDefinition>()
+        public IReadOnlyDictionary<string, BinaryOperatorDefinition> BinaryOperatos { get; } = new Dictionary<string, BinaryOperatorDefinition>()
         {
             { "+", new BinaryOperatorDefinition("+", nameof(Addition),          1, Addition) },
             { "-", new BinaryOperatorDefinition("-", nameof(Substraction),      1, Substraction) },
@@ -37,37 +37,6 @@ namespace Tony.Calculator.Plugins
             { "^", new BinaryOperatorDefinition("^", nameof(Exponant),          3, Exponant) },
         };
 
-
-        #region interface
-        public void AddFunctions(Dictionary<string, FunctionDefinition> functions)
-        {
-            foreach((string name, FunctionDefinition definition) in Functions)
-            {
-                functions.Add(name, definition);
-            }
-        }
-        public void AddVariables(Dictionary<string, VariableDefinition> variables)
-        {
-            foreach ((string name, VariableDefinition definition) in Variables)
-            {
-                variables.Add(name, definition);
-            }
-        }
-        public void AddUnaryOperators(Dictionary<string, UnaryOperatorDefinition> unaryOperators)
-        {
-            foreach ((string name, UnaryOperatorDefinition definition) in UnaryOperators)
-            {
-                unaryOperators.Add(name, definition);
-            }
-        }
-        public void AddBinaryOperators(Dictionary<string, BinaryOperatorDefinition> binaryOperators)
-        {
-            foreach ((string name, BinaryOperatorDefinition definition) in BinaryOperatos)
-            {
-                binaryOperators.Add(name, definition);
-            }
-        }
-        #endregion
 
         #region function
         private static object Max(object[] args)

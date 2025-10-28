@@ -4,9 +4,9 @@ namespace Tony.Calculator.Plugins
 {
     public interface IPlugin
     {
-        public void AddFunctions(Dictionary<string, FunctionDefinition> functions);
-        public void AddVariables(Dictionary<string, VariableDefinition> variables);
-        public void AddUnaryOperators(Dictionary<string, UnaryOperatorDefinition> unaryOperators);
-        public void AddBinaryOperators(Dictionary<string, BinaryOperatorDefinition> binaryOperators);
+        public IReadOnlyDictionary<string, FunctionDefinition> Functions { get; }
+        public IReadOnlyDictionary<string, VariableDefinition> Variables { get; }
+        public IReadOnlyDictionary<string, UnaryOperatorDefinition> UnaryOperators { get; }
+        public IReadOnlyDictionary<string, BinaryOperatorDefinition> BinaryOperatos { get; }
     }
 }

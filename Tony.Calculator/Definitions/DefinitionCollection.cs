@@ -16,17 +16,36 @@ namespace Tony.Calculator.Definitions
             Arithmetic.AddPlugin(new ArithmeticPlugin());
         }
 
-        public Dictionary<string, FunctionDefinition> Functions { get; } = new(StringComparer.InvariantCultureIgnoreCase);
-        public Dictionary<string, VariableDefinition> Variables { get; } = new(StringComparer.InvariantCultureIgnoreCase);
-        public Dictionary<string, UnaryOperatorDefinition> UnaryOperators { get; } = new(StringComparer.InvariantCultureIgnoreCase);
-        public Dictionary<string, BinaryOperatorDefinition> BinaryOperators { get; } = new(StringComparer.InvariantCultureIgnoreCase);
+        private Dictionary<string, FunctionDefinition> _functions = new(StringComparer.InvariantCultureIgnoreCase);
+        public IReadOnlyDictionary<string, FunctionDefinition> Functions => _functions;
+
+        private Dictionary<string, VariableDefinition> _variables = new(StringComparer.InvariantCultureIgnoreCase);
+        public IReadOnlyDictionary<string, VariableDefinition> Variables => _variables;
+
+        private Dictionary<string, UnaryOperatorDefinition> _unaryOperators = new(StringComparer.InvariantCultureIgnoreCase);
+        public IReadOnlyDictionary<string, UnaryOperatorDefinition> UnaryOperators => _unaryOperators;
+
+        private Dictionary<string, BinaryOperatorDefinition> _binaryOperators = new(StringComparer.InvariantCultureIgnoreCase);
+        public IReadOnlyDictionary<string, BinaryOperatorDefinition> BinaryOperators => _binaryOperators;
 
         public void AddPlugin(IPlugin plugin)
         {
-            plugin.AddVariables(Variables);
-            plugin.AddFunctions(Functions);
-            plugin.AddUnaryOperators(UnaryOperators);
-            plugin.AddBinaryOperators(BinaryOperators);
+            foreach ((string name, FunctionDefinition definition) in plugin.Functions)
+            {
+                _functions.Add(name, definition);
+            }
+            foreach ((string name, VariableDefinition definition) in plugin.Variables)
+            {
+                _variables.Add(name, definition);
+            }
+            foreach ((string name, UnaryOperatorDefinition definition) in plugin.UnaryOperators)
+            {
+                _unaryOperators.Add(name, definition);
+            }
+            foreach ((string name, BinaryOperatorDefinition definition) in plugin.BinaryOperatos)
+            {
+                _binaryOperators.Add(name, definition);
+            }
         }
     }
 }
