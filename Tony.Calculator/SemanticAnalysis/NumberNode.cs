@@ -1,5 +1,6 @@
 ﻿using Tony.Calculator.LexicalAnalysis;
 using System.Text.RegularExpressions;
+using System.Text;
 
 namespace Tony.Calculator.SemanticAnalysis
 {
@@ -11,11 +12,33 @@ namespace Tony.Calculator.SemanticAnalysis
             TrimRegex = new Regex(@"_", RegexOptions.Compiled, TimeSpan.FromSeconds(1));
         }
         public Token Token { get; }
-        public double Number { get; }
+        public object Number { get; }
         public NumberNode(Token token)
         {
             Token = token;
-            Number = double.Parse(TrimRegex.Replace(token.Text.ToString(), ""));
+            bool parseToDouble = false;
+            string text = token.Text.ToString();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < text.Length; i++)
+            {
+                char c = text[i];
+                if(c != '_')
+                {
+                    if(c == '.')
+                    {
+                        parseToDouble = true;
+                    }
+                    sb.Append(c);
+                }
+            }
+            if (parseToDouble)
+            {
+                Number = double.Parse(sb.ToString());
+            }
+            else
+            {
+                Number = int.Parse(sb.ToString());
+            }
         }
 
         public object Evaluate()
