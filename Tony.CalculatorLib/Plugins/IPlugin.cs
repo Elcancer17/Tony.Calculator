@@ -1,6 +1,6 @@
-﻿using Tony.Calculator.Definitions;
+﻿using Tony.CalculatorLib.Definitions;
 
-namespace Tony.Calculator.Plugins
+namespace Tony.CalculatorLib.Plugins
 {
     public interface IPlugin
     {

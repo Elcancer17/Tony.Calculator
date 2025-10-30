@@ -1,4 +1,4 @@
-﻿using Tony.Calculator.Definitions;
+﻿using Tony.CalculatorLib.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MathNet.Numerics;
 
-namespace Tony.Calculator.Plugins
+namespace Tony.CalculatorLib.Plugins
 {
     public class ArithmeticPlugin : IPlugin
     {

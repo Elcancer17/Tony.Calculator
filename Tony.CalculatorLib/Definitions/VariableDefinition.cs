@@ -1,4 +1,4 @@
-﻿namespace Tony.Calculator.Definitions
+﻿namespace Tony.CalculatorLib.Definitions
 {
     public class VariableDefinition
     {

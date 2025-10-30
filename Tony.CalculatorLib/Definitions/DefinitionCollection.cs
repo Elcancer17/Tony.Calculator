@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tony.Calculator.Plugins;
+using Tony.CalculatorLib.Plugins;
 
-namespace Tony.Calculator.Definitions
+namespace Tony.CalculatorLib.Definitions
 {
     public class DefinitionCollection
     {

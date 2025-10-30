@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tony.Calculator\Tony.Calculator.csproj" />
+    <ProjectReference Include="..\Tony.CalculatorLib\Tony.CalculatorLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

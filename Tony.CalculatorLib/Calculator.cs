@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tony.Calculator.Definitions;
-using Tony.Calculator.LexicalAnalysis;
-using Tony.Calculator.SemanticAnalysis;
-using static System.Net.Mime.MediaTypeNames;
+using Tony.CalculatorLib.Definitions;
+using Tony.CalculatorLib.LexicalAnalysis;
+using Tony.CalculatorLib.SemanticAnalysis;
 
-namespace Tony.Calculator
+namespace Tony.CalculatorLib
 {
     public class Calculator
     {

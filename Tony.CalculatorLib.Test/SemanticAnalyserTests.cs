@@ -1,10 +1,10 @@
-﻿using Tony.Calculator.SemanticAnalysis;
-using Tony.Calculator.Definitions;
-using Tony.Calculator.Plugins;
-using Tony.Calculator.LexicalAnalysis;
+﻿using Tony.CalculatorLib.SemanticAnalysis;
+using Tony.CalculatorLib.Definitions;
+using Tony.CalculatorLib.Plugins;
+using Tony.CalculatorLib.LexicalAnalysis;
 using System.Diagnostics;
 
-namespace Tony.Calculator.Test
+namespace Tony.CalculatorLib.Test
 {
     [TestClass]
     public sealed class SemanticAnalyserTests

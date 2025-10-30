@@ -1,5 +1,5 @@
-﻿using Tony.Calculator.Definitions;
-using Tony.Calculator.LexicalAnalysis;
+﻿using Tony.CalculatorLib.Definitions;
+using Tony.CalculatorLib.LexicalAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Tony.Calculator.SemanticAnalysis
+namespace Tony.CalculatorLib.SemanticAnalysis
 {
     public struct SemanticError
     {

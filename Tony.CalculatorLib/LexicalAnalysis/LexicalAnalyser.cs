@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Tony.Calculator.LexicalAnalysis
+namespace Tony.CalculatorLib.LexicalAnalysis
 {
     public class LexicalAnalyser
     {

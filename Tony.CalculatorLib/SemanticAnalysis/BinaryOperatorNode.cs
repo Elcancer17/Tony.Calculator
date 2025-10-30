@@ -1,7 +1,7 @@
-﻿using Tony.Calculator.Definitions;
-using Tony.Calculator.LexicalAnalysis;
+﻿using Tony.CalculatorLib.Definitions;
+using Tony.CalculatorLib.LexicalAnalysis;
 
-namespace Tony.Calculator.SemanticAnalysis
+namespace Tony.CalculatorLib.SemanticAnalysis
 {
     public class BinaryOperatorNode : IParseNode
     {

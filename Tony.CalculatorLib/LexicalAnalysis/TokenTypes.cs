@@ -1,4 +1,4 @@
-﻿namespace Tony.Calculator.LexicalAnalysis
+﻿namespace Tony.CalculatorLib.LexicalAnalysis
 {
     public enum TokenTypes
     {

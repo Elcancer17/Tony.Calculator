@@ -1,11 +1,11 @@
-﻿using Tony.Calculator.Definitions;
+﻿using Tony.CalculatorLib.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tony.Calculator.Plugins
+namespace Tony.CalculatorLib.Plugins
 {
     public class UserDefinedPlugin : IPlugin
     {

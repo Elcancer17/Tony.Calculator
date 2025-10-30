@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tony.Calculator.Definitions
+namespace Tony.CalculatorLib.Definitions
 {
     public class FunctionDefinition
     {

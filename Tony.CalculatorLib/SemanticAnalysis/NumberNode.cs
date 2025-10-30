@@ -1,8 +1,8 @@
-﻿using Tony.Calculator.LexicalAnalysis;
+﻿using Tony.CalculatorLib.LexicalAnalysis;
 using System.Text.RegularExpressions;
 using System.Text;
 
-namespace Tony.Calculator.SemanticAnalysis
+namespace Tony.CalculatorLib.SemanticAnalysis
 {
     public class NumberNode : IParseNode
     {
