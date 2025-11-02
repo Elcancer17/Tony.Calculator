@@ -314,5 +314,53 @@ namespace Tony.CalculatorLib.SemanticAnalysis
             ParenthesisNode parenthesisNode = new(tokens[start], node);
             return parenthesisNode;
         }
+
+        public IParseNode OptimiseSyntaxTree(IParseNode root)
+        {
+            return OptimiseSyntaxTree(root, int.MinValue);
+        }
+
+        private IParseNode OptimiseSyntaxTree(IParseNode node, int priority)
+        {
+            switch (node)
+            {
+                case UnaryOperatorNode unaryOperator:
+                    unaryOperator.Operand = OptimiseSyntaxTree(unaryOperator.Operand, int.MaxValue);
+                    return unaryOperator;
+                case ParenthesisNode parenthesis:
+                    IParseNode optimisedNode = OptimiseSyntaxTree(parenthesis.Node, int.MinValue);
+                    if (optimisedNode is ParenthesisNode childParenthesis)
+                    {
+                        if(priority == int.MinValue)
+                        {
+                            return childParenthesis.Node;
+                        }
+                    }
+                    else if (optimisedNode is BinaryOperatorNode childOperator)
+                    {
+                        if(childOperator.Definition.Priority > priority)
+                         {
+                            return childOperator;
+                        }
+                    }
+                    parenthesis.Node = optimisedNode;
+                    return parenthesis;
+                case BinaryOperatorNode binaryOperator:
+                    int highestPriority = priority;
+                    if (binaryOperator.Definition.Priority > priority)
+                    {
+                        highestPriority = binaryOperator.Definition.Priority;
+                    }
+                    binaryOperator.Left = OptimiseSyntaxTree(binaryOperator.Left, highestPriority);
+                    binaryOperator.Right = OptimiseSyntaxTree(binaryOperator.Right, highestPriority);
+                    return binaryOperator;
+                case NumberNode number:
+                    return number;
+                case VariableNode variable:
+                    return variable;
+                default:
+                    throw new NotSupportedException();
+            }
+        }
     }
 }

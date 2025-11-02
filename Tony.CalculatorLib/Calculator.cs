@@ -18,6 +18,7 @@ namespace Tony.CalculatorLib
 
         private string _cachedEquation;
         private IParseNode _cachedRoot;
+        private List<SemanticError> _cachedErrors;
         public Calculator(DefinitionCollection definitions)
         {
             _lexicalAnalyzer = new LexicalAnalyser();
@@ -30,7 +31,11 @@ namespace Tony.CalculatorLib
             if (!string.Equals(_cachedEquation, equation, StringComparison.OrdinalIgnoreCase))
             {
                 IReadOnlyList<Token> tokens = _lexicalAnalyzer.Analyse(equation);
-                _cachedRoot = _semanticAnalyzer.Parse(tokens, out List<SemanticError> errors);
+                _cachedRoot = _semanticAnalyzer.Parse(tokens, out _cachedErrors);
+                if(_cachedErrors.Count == 0)
+                {
+                    _cachedRoot = _semanticAnalyzer.OptimiseSyntaxTree(_cachedRoot);
+                }
                 _cachedEquation = equation;
             }
         }

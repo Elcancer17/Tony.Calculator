@@ -7,7 +7,7 @@ namespace Tony.CalculatorLib.SemanticAnalysis
     {
         public Token Token { get; }
         public UnaryOperatorDefinition Definition { get; }
-        public IParseNode Operand { get; }
+        public IParseNode Operand { get; set; }
         public UnaryOperatorNode(Token token, UnaryOperatorDefinition definition, IParseNode operand)
         {
             Token = token;

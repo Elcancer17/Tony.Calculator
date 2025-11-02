@@ -6,7 +6,7 @@ namespace Tony.CalculatorLib.SemanticAnalysis
     public class ParenthesisNode : IParseNode
     {
         public Token Token { get; }
-        public IParseNode Node { get; }
+        public IParseNode Node { get; set; }
 
         public ParenthesisNode(Token token, IParseNode node)
         {
@@ -21,10 +21,6 @@ namespace Tony.CalculatorLib.SemanticAnalysis
 
         public override string ToString()
         {
-            if(Node is ParenthesisNode)
-            {
-                return Node.ToString();
-            }
             return $"({Node})";
         }
     }

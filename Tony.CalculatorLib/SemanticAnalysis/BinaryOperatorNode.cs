@@ -7,8 +7,8 @@ namespace Tony.CalculatorLib.SemanticAnalysis
     {
         public Token Token { get; }
         public BinaryOperatorDefinition Definition { get; }
-        public IParseNode Left { get; }
-        public IParseNode Right { get; }
+        public IParseNode Left { get; set; }
+        public IParseNode Right { get; set; }
 
         public BinaryOperatorNode(Token token, BinaryOperatorDefinition definition, IParseNode left, IParseNode right)
         {

@@ -7,7 +7,7 @@ using System.Diagnostics;
 namespace Tony.CalculatorLib.Test
 {
     [TestClass]
-    public sealed class SemanticAnalyserTests
+    public sealed class SemanticAnalyserEvaluationTests
     {
         private LexicalAnalyser _lexicalAnalyzer;
         private SemanticAnalyser _semanticAnalyzer;
@@ -25,14 +25,14 @@ namespace Tony.CalculatorLib.Test
         [TestMethod]
         public void CanParseSimpleNumber()
         {
-            const double EXPECTED_VALUE = 12;
+            const int EXPECTED_VALUE = 12;
             string equation = "12";
             IReadOnlyList<Token> tokenStream = _lexicalAnalyzer.Analyse(equation);
 
             IParseNode root = _semanticAnalyzer.Parse(tokenStream, out List<SemanticError> errors);
 
-            double result = (double)root.Evaluate();
-            Trace.WriteLine($"{root.ToString()}={result}");
+            int result = (int)root.Evaluate();
+            Trace.WriteLine($"{root.ToString()} = {result}");
             Assert.AreEqual(EXPECTED_VALUE, result);
             Assert.IsTrue(errors.Count == 0);
         }
@@ -47,7 +47,7 @@ namespace Tony.CalculatorLib.Test
             IParseNode root = _semanticAnalyzer.Parse(tokenStream, out List<SemanticError> errors);
 
             double result = (double)root.Evaluate();
-            Trace.WriteLine($"{root.ToString()}={result}");
+            Trace.WriteLine($"{root.ToString()} = {result}");
             Assert.AreEqual(EXPECTED_VALUE, result);
             Assert.IsTrue(errors.Count == 0);
         }
@@ -62,7 +62,7 @@ namespace Tony.CalculatorLib.Test
             IParseNode root = _semanticAnalyzer.Parse(tokenStream, out List<SemanticError> errors);
 
             double result = (double)root.Evaluate();
-            Trace.WriteLine($"{root.ToString()}={result}");
+            Trace.WriteLine($"{root.ToString()} = {result}");
             Assert.AreEqual(EXPECTED_VALUE, result);
             Assert.IsTrue(errors.Count == 0);
         }
@@ -71,14 +71,14 @@ namespace Tony.CalculatorLib.Test
         [TestMethod]
         public void CanParseBinaryOperator()
         {
-            const double EXPECTED_VALUE = 9;
+            const int EXPECTED_VALUE = 9;
             string equation = "4 + 5";
             IReadOnlyList<Token> tokenStream = _lexicalAnalyzer.Analyse(equation);
 
             IParseNode root = _semanticAnalyzer.Parse(tokenStream, out List<SemanticError> errors);
 
-            double result = (double)root.Evaluate();
-            Trace.WriteLine($"{root.ToString()}={result}");
+            int result = (int)root.Evaluate();
+            Trace.WriteLine($"{root.ToString()} = {result}");
             Assert.AreEqual(EXPECTED_VALUE, result);
             Assert.IsTrue(errors.Count == 0);
         }
@@ -87,14 +87,14 @@ namespace Tony.CalculatorLib.Test
         [TestMethod]
         public void CanParseUnaryOperator()
         {
-            const double EXPECTED_VALUE = -5;
+            const int EXPECTED_VALUE = -5;
             string equation = "- 5";
             IReadOnlyList<Token> tokenStream = _lexicalAnalyzer.Analyse(equation);
 
             IParseNode root = _semanticAnalyzer.Parse(tokenStream, out List<SemanticError> errors);
 
-            double result = (double)root.Evaluate();
-            Trace.WriteLine($"{root.ToString()}={result}");
+            int result = (int)root.Evaluate();
+            Trace.WriteLine($"{root.ToString()} = {result}");
             Assert.AreEqual(EXPECTED_VALUE, result);
             Assert.IsTrue(errors.Count == 0);
         }
@@ -102,14 +102,14 @@ namespace Tony.CalculatorLib.Test
         [TestMethod]
         public void CanParseParentheses()
         {
-            const double EXPECTED_VALUE = -10;
+            const int EXPECTED_VALUE = -10;
             string equation = "4 - (5 + 9)";
             IReadOnlyList<Token> tokenStream = _lexicalAnalyzer.Analyse(equation);
 
             IParseNode root = _semanticAnalyzer.Parse(tokenStream, out List<SemanticError> errors);
 
-            double result = (double)root.Evaluate();
-            Trace.WriteLine($"{root.ToString()}={result}");
+            int result = (int)root.Evaluate();
+            Trace.WriteLine($"{root.ToString()} = {result}");
             Assert.AreEqual(EXPECTED_VALUE, result);
             Assert.IsTrue(errors.Count == 0);
         }
@@ -117,14 +117,14 @@ namespace Tony.CalculatorLib.Test
         [TestMethod]
         public void PrioriseUnaryOperatorOverBinaryOperator()
         {
-            const double EXPECTED_VALUE = 1;
+            const int EXPECTED_VALUE = 1;
             string equation = "-5 + 6";
             IReadOnlyList<Token> tokenStream = _lexicalAnalyzer.Analyse(equation);
 
             IParseNode root = _semanticAnalyzer.Parse(tokenStream, out List<SemanticError> errors);
 
-            double result = (double)root.Evaluate();
-            Trace.WriteLine($"{root.ToString()}={result}");
+            int result = (int)root.Evaluate();
+            Trace.WriteLine($"{root.ToString()} = {result}");
             Assert.AreEqual(EXPECTED_VALUE, result);
             Assert.IsTrue(errors.Count == 0);
         }
@@ -132,14 +132,14 @@ namespace Tony.CalculatorLib.Test
         [TestMethod]
         public void CanParseFunction()
         {
-            const double EXPECTED_VALUE = 2;
+            const int EXPECTED_VALUE = 2;
             string equation = "max(1,2)";
             IReadOnlyList<Token> tokenStream = _lexicalAnalyzer.Analyse(equation);
 
             IParseNode root = _semanticAnalyzer.Parse(tokenStream, out List<SemanticError> errors);
 
-            double result = (double)root.Evaluate();
-            Trace.WriteLine($"{root.ToString()}={result}");
+            int result = (int)root.Evaluate();
+            Trace.WriteLine($"{root.ToString()} = {result}");
             Assert.AreEqual(EXPECTED_VALUE, result);
             Assert.IsTrue(errors.Count == 0);
         }
@@ -147,14 +147,14 @@ namespace Tony.CalculatorLib.Test
         [TestMethod]
         public void BinaryOperatorUsesPriority()
         {
-            const double EXPECTED_VALUE = 2;
+            const int EXPECTED_VALUE = 2;
             string equation = "1-2+3";
             IReadOnlyList<Token> tokenStream = _lexicalAnalyzer.Analyse(equation);
 
             IParseNode root = _semanticAnalyzer.Parse(tokenStream, out List<SemanticError> errors);
 
-            double result = (double)root.Evaluate();
-            Trace.WriteLine($"{root.ToString()}={result}");
+            int result = (int)root.Evaluate();
+            Trace.WriteLine($"{root.ToString()} = {result}");
             Assert.AreEqual(EXPECTED_VALUE, result);
             Assert.IsTrue(errors.Count == 0);
         }
