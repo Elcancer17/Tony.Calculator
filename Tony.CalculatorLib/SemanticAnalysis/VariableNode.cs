@@ -20,7 +20,7 @@ namespace Tony.CalculatorLib.SemanticAnalysis
 
         public override string ToString()
         {
-            return Definition != null ? Definition.Value.ToString() : Token.Text.ToString();
+            return Definition?.Value.ToString() ?? Token.Text.ToString();
         }
     }
 }

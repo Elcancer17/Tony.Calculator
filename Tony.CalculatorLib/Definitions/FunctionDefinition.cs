@@ -8,24 +8,24 @@ namespace Tony.CalculatorLib.Definitions
 {
     public class FunctionDefinition
     {
-        public string Name { get; }
+        public string Identifier { get; }
         public int ParameterCount { get; }
-        public string Description { get; }
+        public string DisplayName { get; init; }
+        public string Description { get; init; }
 
         private readonly Func<object[], object> _func;
         /// <param name="parameterCount">-1 to bypass the parameter count validation</param>
-        public FunctionDefinition(string name, Func<object[], object> func, int parameterCount, string description)
+        public FunctionDefinition(string identifier, Func<object[], object> func, int parameterCount)
         {
-            Name = name;
+            Identifier = identifier;
             _func = func;
             ParameterCount = parameterCount;
-            Description = description;
         }
         public object Execute(object[] args) 
         {
             if (ParameterCount != -1 && args.Length != ParameterCount)
             {
-                throw new Exception($"Expected {ParameterCount} parameter(s) but found {args.Length} for function {Name}().");
+                throw new Exception($"Expected {ParameterCount} parameter(s) but found {args.Length} for function {DisplayName ?? $"{Identifier}()"}.");
             }
             return _func(args);
         }
@@ -33,7 +33,7 @@ namespace Tony.CalculatorLib.Definitions
 
         public override string ToString()
         {
-            return Name;
+            return DisplayName;
         }
     }
 }

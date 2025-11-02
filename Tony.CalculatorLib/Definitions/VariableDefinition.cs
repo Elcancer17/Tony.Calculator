@@ -2,17 +2,17 @@
 {
     public class VariableDefinition
     {
-        public string Name { get; }
+        public string Identifier { get; }
         public object Value { get; }
-        public VariableDefinition(string name, object value)
+        public VariableDefinition(string identifier, object value)
         {
-            Name = name;
+            Identifier = identifier;
             Value = value;
         }
 
         public override string ToString()
         {
-            return $"{Name} : {Value}";
+            return $"{Identifier} : {Value}";
         }
     }
 }

@@ -18,43 +18,158 @@ namespace Tony.CalculatorLib.Plugins
         */
         public IReadOnlyDictionary<string, FunctionDefinition> Functions { get; } = new Dictionary<string, FunctionDefinition>()
         {
-            { "double"  , new FunctionDefinition("double(arg)",         Double,         1, "Cast number to double.")},
-            { "int"     , new FunctionDefinition("int(arg)",            Int,            1, "Cast number to int.")},
-            { "mean"    , new FunctionDefinition("mean(args...)",       Mean,           -1, "Mean of list of numbers.")},
-            { "max"     , new FunctionDefinition("max(arg1, arg2)",     Max,            2, "Max between two numbers.") },
-            { "min"     , new FunctionDefinition("min(arg1, arg2)",     Min,            2, "Min between two numbers.") },
-            { "round"   , new FunctionDefinition("round(arg, digits)",  Round,          2, "Cast number to int.")},
-            { "log"     , new FunctionDefinition("log(arg, base)",      Log,            2, "Parametrable base logarithm.")},
-            { "ln"      , new FunctionDefinition("ln(arg)",             NatualLog,      1, "Base e logarithm.")},
-            { "log2"    , new FunctionDefinition("log2(arg)",           Log2,           1, "Base 2 logarithm.")},
-            { "log10"   , new FunctionDefinition("log10(arg)",          Log10,          1, "Base 10 logarithm.")},
-            { "sqrt"    , new FunctionDefinition("sqrt(arg)",           SquareRoot,     1, "Square root.")},
-            { "abs"     , new FunctionDefinition("abs(arg)",            AbsoluteValue,  1, "Absolute value.")},
-            { "sign"    , new FunctionDefinition("sign(arg)",           Signum,         1, "Signum function. Return -1, 0 or 1 depending on the signe of the parameter.")},
-            { "floor"   , new FunctionDefinition("floor(arg)",          Floor,          1, "Round down to the nearest integer.")},
-            { "ceil"    , new FunctionDefinition("ceil(arg)",           Ceiling,        1, "Round up to the nearest integer.")},
-            { "mod"     , new FunctionDefinition("mod(arg1, arg2)",     ModuloFunc,     2, "Remainder of division.")},
-            { "fact"     , new FunctionDefinition("fact(arg)",          Factorial,      1, ".")},
+            { "double", new FunctionDefinition("double", Double, 1)
+                { 
+                    DisplayName = "double(arg)",
+                    Description = "Cast number to double."
+                } 
+            },
+            { "int", new FunctionDefinition("int", Int, 1)
+                { 
+                    DisplayName = "int(arg)",
+                    Description = "Cast number to int." 
+                }
+            },
+            { "mean", new FunctionDefinition("mean", Mean, -1)
+                {
+                    DisplayName = "mean(args...)",
+                    Description = "Mean of list of numbers."
+                }
+            },
+            { "max", new FunctionDefinition("max", Max, 2)
+                {
+                    DisplayName = "max(arg1, arg2)",
+                    Description = "Max between two numbers." 
+                }
+            },
+            { "min", new FunctionDefinition("min", Min, 2)
+                { 
+                    DisplayName = "min(arg1, arg2)", 
+                    Description = "Min between two numbers."
+                } 
+            },
+            { "round", new FunctionDefinition("round", Round, 2)
+                {
+                    DisplayName = "round(arg, digits)",
+                    Description = "Cast number to int."
+                }
+            },
+            { "log", new FunctionDefinition("log", Log, 2)
+                {
+                    DisplayName = "log(arg, base)",
+                    Description = "Parametrable base logarithm."
+                }
+            },
+            { "ln", new FunctionDefinition("ln", NatualLog, 1)
+                {
+                    DisplayName = "ln(arg)",
+                    Description = "Base e logarithm."
+                }
+            },
+            { "log2", new FunctionDefinition("log2", Log2, 1)
+                {
+                    DisplayName = "log2(arg)",
+                    Description = "Base 2 logarithm."
+                }
+            },
+            { "log10", new FunctionDefinition("log10", Log10, 1)
+                {
+                    DisplayName = "log10(arg)",
+                    Description = "Base 10 logarithm."
+                }
+            },
+            { "sqrt", new FunctionDefinition("sqrt", SquareRoot, 1)
+                {
+                    DisplayName = "sqrt(arg)",
+                    Description = "Square root."
+                }
+            },
+            { "abs", new FunctionDefinition("abs", AbsoluteValue, 1)
+                {
+                    DisplayName = "abs(arg)",
+                    Description = "Absolute value."
+                }
+            },
+            { "sign", new FunctionDefinition("sign", Signum, 1)
+                {
+                    DisplayName = "sign(arg)",
+                    Description = "Signum function. Return -1, 0 or 1 depending on the signe of the parameter."
+                }
+            },
+            { "floor", new FunctionDefinition("floor", Floor, 1)
+                {
+                    DisplayName = "floor(arg)",
+                    Description = "Round down to the nearest integer."
+                }
+            },
+            { "ceil", new FunctionDefinition("ceil", Ceiling, 1)
+                {
+                    DisplayName = "ceil(arg)",
+                    Description = "Round up to the nearest integer."
+                }
+            },
+            { "mod", new FunctionDefinition("mod", ModuloFunc, 2)
+                {
+                    DisplayName = "mod(arg1, arg2)",
+                    Description = "Remainder of division."
+                }
+            },
+            { "fact", new FunctionDefinition("fact", Factorial, 1)
+                {
+                    DisplayName = "fact(arg)",
+                    Description = "."
+                }
+            },
         };
 
         public IReadOnlyDictionary<string, VariableDefinition> Variables { get; } = new Dictionary<string, VariableDefinition>()
         {
             { nameof(Math.E), new VariableDefinition(nameof(Math.E), Math.E) },
+            { nameof(Math.PI), new VariableDefinition(nameof(Math.PI), Math.PI) },
+            { nameof(Math.Tau), new VariableDefinition(nameof(Math.Tau), Math.Tau) },
         };
 
         public IReadOnlyDictionary<string, UnaryOperatorDefinition> UnaryOperators { get; } = new Dictionary<string, UnaryOperatorDefinition>()
         {
-            { "-", new UnaryOperatorDefinition("-", nameof(Negative), Negative) },
+            { "-", new UnaryOperatorDefinition("-", Negative) 
+                {
+                    DisplayName = "Negative"
+                } 
+            },
         };
 
         public IReadOnlyDictionary<string, BinaryOperatorDefinition> BinaryOperatos { get; } = new Dictionary<string, BinaryOperatorDefinition>()
         {
-            { "+", new BinaryOperatorDefinition("+", "Addition",        1, Addition) },
-            { "-", new BinaryOperatorDefinition("-", "Substraction",    1, Substraction) },
-            { "*", new BinaryOperatorDefinition("*", "Multiplication",  2, Multiplication) },
-            { "/", new BinaryOperatorDefinition("/", "Division",        2, Division) },
-            { "%", new BinaryOperatorDefinition("%", "Modulo",          2, ModuloBinaryOp) },
-            { "^", new BinaryOperatorDefinition("^", "Exponant",        3, Exponant) },
+            { "+", new BinaryOperatorDefinition("+", 1, Addition)
+                {
+                    DisplayName = "Addition"
+                }
+            },
+            { "-", new BinaryOperatorDefinition("-", 1, Substraction)
+                {
+                    DisplayName = "Substraction"
+                }
+            },
+            { "*", new BinaryOperatorDefinition("*", 2, Multiplication)
+                {
+                    DisplayName = "Multiplication"
+                }
+            },
+            { "/", new BinaryOperatorDefinition("/", 2, Division)
+                {
+                    DisplayName = "Division"
+                }
+            },
+            { "%", new BinaryOperatorDefinition("%", 2, ModuloBinaryOp)
+                {
+                    DisplayName = "Modulo"
+                }
+            },
+            { "^", new BinaryOperatorDefinition("^", 3, Exponant)
+                {
+                    DisplayName = "Exponant"
+                }
+            },
         };
 
 

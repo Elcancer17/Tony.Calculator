@@ -23,7 +23,7 @@ namespace Tony.CalculatorLib.SemanticAnalysis
 
         public override string ToString()
         {
-            string functionName = Definition != null ? Definition.Name : Token.Text.ToString();
+            string functionName = Definition?.Identifier ?? Token.Text.ToString();
             string[] parameters = Parameters.Select(x => x.ToString()).ToArray();
             return $"{functionName}({string.Join(", ", parameters)})";
         }
