@@ -114,7 +114,7 @@ namespace Tony.CalculatorLib.Plugins
                     Description = "Remainder of division."
                 }
             },
-            { "fact", new FunctionDefinition("fact", Factorial, 1)
+            { "fact", new FunctionDefinition("fact", FactorialFunc, 1)
                 {
                     DisplayName = "fact(arg)",
                     Description = "."
@@ -135,6 +135,11 @@ namespace Tony.CalculatorLib.Plugins
                 {
                     DisplayName = "Negative"
                 } 
+            },
+            { "!", new UnaryOperatorDefinition("!", FactorialOp)
+                {
+                    DisplayName = "Factorial"
+                }
             },
         };
 
@@ -364,13 +369,9 @@ namespace Tony.CalculatorLib.Plugins
             return ModuloBinaryOp(args[0], args[1]);
         }
 
-        private static object Factorial(object[] args)
+        private static object FactorialFunc(object[] args)
         {
-            if (args[0] is double doubleArg)
-                return SpecialFunctions.Gamma(doubleArg + 1);
-            if (args[0] is int intArg)
-                return SpecialFunctions.Factorial(intArg);
-            throw new NotSupportedException();
+            return FactorialOp(args[0]);
         }
         #endregion
 
@@ -385,6 +386,14 @@ namespace Tony.CalculatorLib.Plugins
             {
                 return -int1;
             }
+            throw new NotSupportedException();
+        }
+        private static object FactorialOp(object arg)
+        {
+            if (arg is double doubleArg)
+                return SpecialFunctions.Gamma(doubleArg + 1);
+            if (arg is int intArg)
+                return SpecialFunctions.Factorial(intArg);
             throw new NotSupportedException();
         }
         #endregion
