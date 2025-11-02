@@ -25,7 +25,8 @@ namespace Tony.CalculatorLib.SemanticAnalysis
 
         public override string ToString()
         {
-            return $"({Left.ToString()}{Definition.Symbol}{Right.ToString()})";
+            string operationSymbol = Definition != null ? Definition.Symbol : Token.Text.ToString();
+            return $"{Left?.ToString()}{operationSymbol}{Right?.ToString()}";
         }
     }
 }

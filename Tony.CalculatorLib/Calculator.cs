@@ -15,6 +15,9 @@ namespace Tony.CalculatorLib
 
         private LexicalAnalyser _lexicalAnalyzer;
         private SemanticAnalyser _semanticAnalyzer;
+
+        private string _cachedEquation;
+        private IParseNode _cachedRoot;
         public Calculator(DefinitionCollection definitions)
         {
             _lexicalAnalyzer = new LexicalAnalyser();
@@ -22,12 +25,27 @@ namespace Tony.CalculatorLib
             Definitions = definitions;
         }
 
+        private void ComputeAndCacheEquation(string equation)
+        {
+            if (!string.Equals(_cachedEquation, equation, StringComparison.OrdinalIgnoreCase))
+            {
+                IReadOnlyList<Token> tokens = _lexicalAnalyzer.Analyse(equation);
+                _cachedRoot = _semanticAnalyzer.Parse(tokens, out List<SemanticError> errors);
+                _cachedEquation = equation;
+            }
+        }
+
         public object Evaluate(string equation)
         {
-            IReadOnlyList<Token> tokens = _lexicalAnalyzer.Analyse(equation);
-            IParseNode root = _semanticAnalyzer.Parse(tokens, out List<SemanticError> errors);
-            object value = root.Evaluate();
+            ComputeAndCacheEquation(equation);
+            object value = _cachedRoot.Evaluate();
             return value;
+        }
+
+        public string FormatEquation(string equation)
+        {
+            ComputeAndCacheEquation(equation);
+            return _cachedRoot.ToString();
         }
     }
 }

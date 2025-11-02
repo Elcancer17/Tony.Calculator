@@ -3,24 +3,29 @@ using Tony.CalculatorLib.LexicalAnalysis;
 
 namespace Tony.CalculatorLib.SemanticAnalysis
 {
-    public class VariableNode : IParseNode
+    public class ParenthesisNode : IParseNode
     {
         public Token Token { get; }
-        public VariableDefinition Definition { get; }
-        public VariableNode(Token token, VariableDefinition definition)
+        public IParseNode Node { get; }
+
+        public ParenthesisNode(Token token, IParseNode node)
         {
             Token = token;
-            Definition = definition;
+            Node = node;
         }
 
         public object Evaluate()
         {
-            return Definition.Value;
+            return Node.Evaluate();
         }
 
         public override string ToString()
         {
-            return Definition != null ? Definition.Value.ToString() : Token.Text.ToString();
+            if(Node is ParenthesisNode)
+            {
+                return Node.ToString();
+            }
+            return $"({Node})";
         }
     }
 }
